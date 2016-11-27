@@ -13,17 +13,27 @@ class HLTVSpider(scrapy.Spider):
         self.team2 = '"G2"'
         self.parse(self)
 
+    #initial parse method, starts on start_urls
     def parse(self, response):
-        team_links = []
-        self.add_team_link(team_links, self.team1, response)
-        self.add_team_link(team_links, self.team2, response)
+        #only search links from team data table, or else it will scrape matches, forum posts, etc.
+        team_data_xpath = response.xpath('//div[@class="covMainBoxContent"]')
 
+        team_links = []
+        self.add_team_link(team_links, self.team1, team_data_xpath)
+        self.add_team_link(team_links, self.team2, team_data_xpath)
+
+        filename = 'initial.html'
+        with open(filename, 'wb') as f:
+            f.write(response.body)
+
+        #visits each team page
         for link in team_links:
             yield scrapy.Request(link, callback=self.parseTeam)
 
-    def add_team_link(self, team_links, team, response):
-        team_link_xpath = '//a[contains(.,%s)]/@href' % team
-        team_link = self.base_url + response.xpath(team_link_xpath).extract_first()
+    #constructs a link to team's page using xpath
+    def add_team_link(self, team_links, team, team_data_xpath):
+        team_link_xpath = './/a[contains(.,%s)]/@href' % team
+        team_link = self.base_url + team_data_xpath.xpath(team_link_xpath).extract_first()
         team_links.append(team_link)
 
     def parseTeam(self, response):
