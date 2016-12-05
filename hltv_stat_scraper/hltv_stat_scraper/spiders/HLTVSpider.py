@@ -46,8 +46,6 @@ class HLTVSpider(scrapy.Spider):
         with open(filename, 'wb') as f:
             f.write(response.body)
 
-        print "Yee"
-
         logo_box_content = response.xpath('//div[@class="covGroupBoxContent"][1]')
         team_logo = logo_box_content.xpath('.//img/@src').extract_first()
 
@@ -56,10 +54,8 @@ class HLTVSpider(scrapy.Spider):
         for player in players:
             print player
 
-        print "Yay!"
-
-ti = TestInput()
-ti.enter_teams()
+# ti = TestInput()
+# ti.enter_teams()
 process = CrawlerProcess({
     'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
 })

@@ -1,7 +1,7 @@
-class Team():
+class Team:
 
-    def __init__(self):
-        self.name = ""
+    def __init__(self, name):
+        self.name = name
         self.image_link = ""
 
     def set_name(self, name):
